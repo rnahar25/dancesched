@@ -512,14 +512,14 @@ class DanceScheduler {
     
     // Firebase Cloud Storage
     async setupCloudStorage() {
-        // Initialize Firebase
         const firebaseConfig = {
-            apiKey: "demo-api-key",
-            authDomain: "dance-scheduler-demo.firebaseapp.com",
-            projectId: "dance-scheduler-demo",
-            storageBucket: "dance-scheduler-demo.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef123456"
+            apiKey: "AIzaSyD3_Oxk4hBOmE_g3g5KMtnSfhFkcQ46vbc",
+            authDomain: "dancesched-b95fc.firebaseapp.com",
+            projectId: "dancesched-b95fc",
+            storageBucket: "dancesched-b95fc.firebasestorage.app",
+            messagingSenderId: "534215773388",
+            appId: "1:534215773388:web:0c66fa6ccee313a7110669",
+            measurementId: "G-YZKPGGXK57"
         };
 
         try {
@@ -534,6 +534,7 @@ class DanceScheduler {
             await this.autoLoadFromCloud();
         } catch (error) {
             console.error('Firebase initialization error:', error);
+            console.log('Using local storage only. Follow FIREBASE_SETUP.md to enable cloud sync.');
             this.db = null;
         }
     }
