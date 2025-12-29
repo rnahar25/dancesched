@@ -540,12 +540,8 @@ class DanceScheduler {
     }
     
     getUserId() {
-        let userId = localStorage.getItem('danceScheduler_userId');
-        if (!userId) {
-            userId = 'user_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
-            localStorage.setItem('danceScheduler_userId', userId);
-        }
-        return userId;
+        // Use a shared userId so all browsers sync to the same document
+        return 'shared_schedule';
     }
     
     // Auto-save to cloud (silent background operation)
