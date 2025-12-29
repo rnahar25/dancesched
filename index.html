@@ -64,11 +64,15 @@
                     <input type="time" id="time" required>
                 </div>
                 <div class="form-group">
-                    <label for="duration">Duration (minutes):</label>
+                    <label for="ticketLink">Registration/Payment:</label>
+                    <input type="text" id="ticketLink" placeholder="e.g., https://eventbrite.com/event or Venmo @username $25" required>
+                </div>
+                <div class="form-group">
+                    <label for="duration">Duration (minutes): <span style="color: #666; font-weight: normal;">(Optional)</span></label>
                     <input type="number" id="duration" value="120" min="15" max="240">
                 </div>
                 <div class="form-group">
-                    <label for="style">Dance Style:</label>
+                    <label for="style">Dance Style: <span style="color: #666; font-weight: normal;">(Optional)</span></label>
                     <select id="style">
                         <option value="">Select Style</option>
                         <option value="Bhangra">Bhangra</option>
@@ -84,11 +88,11 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="location">Location:</label>
+                    <label for="location">Location: <span style="color: #666; font-weight: normal;">(Optional)</span></label>
                     <input type="text" id="location" placeholder="e.g., Ripley Grier, Studio A, Room 101">
                 </div>
                 <div class="form-group">
-                    <label for="level">Level:</label>
+                    <label for="level">Level: <span style="color: #666; font-weight: normal;">(Optional)</span></label>
                     <select id="level">
                         <option value="">Select Level</option>
                         <option value="Beginner">Beginner</option>
@@ -98,8 +102,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="ticketLink">Registration/Payment:</label>
-                    <input type="text" id="ticketLink" placeholder="e.g., https://eventbrite.com/event or Venmo @username $25">
+                    <label for="teacherBioUrl">Teacher Bio URL: <span style="color: #666; font-weight: normal;">(Optional)</span></label>
+                    <input type="text" id="teacherBioUrl" placeholder="e.g., https://teachername.com/bio">
+                </div>
+                <div class="form-group">
+                    <label for="teacherInstagram">Teacher Instagram: <span style="color: #666; font-weight: normal;">(Optional)</span></label>
+                    <input type="text" id="teacherInstagram" placeholder="e.g., @teachername">
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-primary">Save Class</button>

@@ -92,6 +92,7 @@ class DanceScheduler {
             this.generateCalendar();
             this.updateTeacherFilter();
         }
+        
     }
     
     generateId() {
@@ -297,11 +298,13 @@ class DanceScheduler {
             style: formData.get('style') || document.getElementById('style').value,
             level: formData.get('level') || document.getElementById('level').value,
             location: formData.get('location') || document.getElementById('location').value || '',
-            ticketLink: formData.get('ticketLink') || document.getElementById('ticketLink').value || ''
+            ticketLink: formData.get('ticketLink') || document.getElementById('ticketLink').value || '',
+            teacherBioUrl: formData.get('teacherBioUrl') || document.getElementById('teacherBioUrl').value || '',
+            teacherInstagram: formData.get('teacherInstagram') || document.getElementById('teacherInstagram').value || ''
         };
         
         // Validate required fields
-        if (!classData.name || !classData.teacher || !classData.date || !classData.time) {
+        if (!classData.name || !classData.teacher || !classData.date || !classData.time || !classData.ticketLink) {
             alert('Please fill in all required fields.');
             return;
         }
@@ -343,7 +346,7 @@ class DanceScheduler {
             </div>
             <div class="detail-item">
                 <span class="detail-label">Teacher:</span>
-                <span class="detail-value">${classObj.teacher}</span>
+                <span class="detail-value">${this.formatTeacherName(classObj.teacher, classObj.teacherBioUrl, classObj.teacherInstagram)}</span>
             </div>
             <div class="detail-item">
                 <span class="detail-label">Date:</span>
@@ -414,6 +417,8 @@ class DanceScheduler {
         document.getElementById('level').value = classObj.level;
         document.getElementById('location').value = classObj.location || '';
         document.getElementById('ticketLink').value = classObj.ticketLink || '';
+        document.getElementById('teacherBioUrl').value = classObj.teacherBioUrl || '';
+        document.getElementById('teacherInstagram').value = classObj.teacherInstagram || '';
         
         editModal.style.display = 'block';
     }
@@ -468,6 +473,27 @@ class DanceScheduler {
         }
     }
     
+    formatTeacherName(teacherName, bioUrl, instagram) {
+        let result = '';
+        
+        // Teacher name - clickable if bio URL provided
+        if (bioUrl && bioUrl.trim()) {
+            result += `<a href="${bioUrl}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; font-weight: 600;">${teacherName}</a>`;
+        } else {
+            result += `<span style="font-weight: 600;">${teacherName}</span>`;
+        }
+        
+        // Instagram handle in parentheses if provided
+        if (instagram && instagram.trim()) {
+            // Clean up Instagram handle (remove @ if present, add it back)
+            const cleanHandle = instagram.replace('@', '');
+            const instagramUrl = `https://instagram.com/${cleanHandle}`;
+            result += ` <span style="color: #666; font-size: 0.9em;">(<a href="${instagramUrl}" target="_blank" rel="noopener noreferrer" style="color: #E4405F; text-decoration: none;">@${cleanHandle}</a>)</span>`;
+        }
+        
+        return result;
+    }
+    
     showNotification(message, duration = 3000) {
         // Create a simple notification
         const notification = document.createElement('div');
@@ -517,6 +543,24 @@ class DanceScheduler {
             localStorage.setItem('danceScheduler_lastModified', new Date().toISOString());
         } catch (error) {
             console.error('Error saving classes to storage:', error);
+        }
+    }
+    
+    loadTeacherProfilesFromStorage() {
+        try {
+            const stored = localStorage.getItem('teacherProfiles');
+            return stored ? JSON.parse(stored) : {};
+        } catch (error) {
+            console.error('Error loading teacher profiles from storage:', error);
+            return {};
+        }
+    }
+    
+    saveTeacherProfilesToStorage() {
+        try {
+            localStorage.setItem('teacherProfiles', JSON.stringify(this.teacherProfiles));
+        } catch (error) {
+            console.error('Error saving teacher profiles to storage:', error);
         }
     }
     
