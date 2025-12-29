@@ -219,15 +219,15 @@ main {
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
-.class-item.ballet { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
-.class-item.jazz { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
-.class-item.hiphop { background: linear-gradient(135deg, #fad0c4, #ffd1ff); }
+.class-item.bhangra { background: linear-gradient(135deg, #4caf50, #8bc34a); }
+.class-item.bhangrafusion { background: linear-gradient(135deg, #66bb6a, #aed581); }
+.class-item.bollywood { background: linear-gradient(135deg, #ff6b35, #f7931e); }
+.class-item.bollywoodfusion { background: linear-gradient(135deg, #ff8a65, #ffab40); }
 .class-item.contemporary { background: linear-gradient(135deg, #a8edea, #fed6e3); }
-.class-item.tap { background: linear-gradient(135deg, #d299c2, #fef9d7); }
-.class-item.ballroom { background: linear-gradient(135deg, #89f7fe, #66a6ff); }
+.class-item.hiphop { background: linear-gradient(135deg, #fad0c4, #ffd1ff); }
+.class-item.jazz { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
 .class-item.latin { background: linear-gradient(135deg, #fa709a, #fee140); }
-.class-item.salsa { background: linear-gradient(135deg, #ff8a80, #ffccbc); }
-.class-item.swing { background: linear-gradient(135deg, #667eea, #764ba2); }
+.class-item.semiclassical { background: linear-gradient(135deg, #9c27b0, #e91e63); }
 .class-item.other { background: linear-gradient(135deg, #96c93d, #00b09b); }
 
 /* Modal Styles */

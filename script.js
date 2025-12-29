@@ -75,33 +75,15 @@ class DanceScheduler {
             const sampleClasses = [
                 {
                     id: this.generateId(),
-                    name: 'Beginning Ballet',
-                    teacher: 'Sarah Johnson',
-                    date: this.formatDate(new Date()),
-                    time: '10:00',
-                    duration: 60,
-                    style: 'Ballet',
-                    level: 'Beginner'
-                },
-                {
-                    id: this.generateId(),
-                    name: 'Jazz Intermediate',
-                    teacher: 'Mike Chen',
+                    name: 'Bollywood Fusion',
+                    teacher: 'Rupal Nahar',
                     date: this.formatDate(new Date(Date.now() + 86400000)), // Tomorrow
                     time: '14:00',
                     duration: 75,
-                    style: 'Jazz',
-                    level: 'Intermediate'
-                },
-                {
-                    id: this.generateId(),
-                    name: 'Hip Hop Basics',
-                    teacher: 'Alex Rivera',
-                    date: this.formatDate(new Date(Date.now() + 172800000)), // Day after tomorrow
-                    time: '18:00',
-                    duration: 90,
-                    style: 'Hip Hop',
-                    level: 'Beginner'
+                    style: 'Bollywood Fusion',
+                    level: 'Intermediate',
+                    location: 'Ripley Grier, Studio B',
+                    ticketLink: 'Venmo @rupalnahar $25'
                 }
             ];
             
@@ -281,6 +263,9 @@ class DanceScheduler {
             document.getElementById('date').value = selectedDate;
         }
         
+        // Set default time to 12:00 PM
+        document.getElementById('time').value = '12:00';
+        
         modal.style.display = 'block';
         document.getElementById('className').focus();
     }
@@ -308,7 +293,9 @@ class DanceScheduler {
             time: formData.get('time') || document.getElementById('time').value,
             duration: parseInt(formData.get('duration') || document.getElementById('duration').value),
             style: formData.get('style') || document.getElementById('style').value,
-            level: formData.get('level') || document.getElementById('level').value
+            level: formData.get('level') || document.getElementById('level').value,
+            location: formData.get('location') || document.getElementById('location').value || '',
+            ticketLink: formData.get('ticketLink') || document.getElementById('ticketLink').value || ''
         };
         
         // Validate required fields
@@ -376,6 +363,18 @@ class DanceScheduler {
                 <span class="detail-label">Level:</span>
                 <span class="detail-value">${classObj.level}</span>
             </div>
+            ${classObj.location ? `
+            <div class="detail-item">
+                <span class="detail-label">Location:</span>
+                <span class="detail-value">${classObj.location}</span>
+            </div>
+            ` : ''}
+            ${classObj.ticketLink ? `
+            <div class="detail-item">
+                <span class="detail-label">Registration/Payment:</span>
+                <span class="detail-value">${this.formatRegistrationInfo(classObj.ticketLink)}</span>
+            </div>
+            ` : ''}
         `;
         
         // Store the selected class ID for editing/deleting
@@ -407,6 +406,8 @@ class DanceScheduler {
         document.getElementById('duration').value = classObj.duration;
         document.getElementById('style').value = classObj.style;
         document.getElementById('level').value = classObj.level;
+        document.getElementById('location').value = classObj.location || '';
+        document.getElementById('ticketLink').value = classObj.ticketLink || '';
         
         editModal.style.display = 'block';
     }
@@ -445,6 +446,16 @@ class DanceScheduler {
         const ampm = hour >= 12 ? 'PM' : 'AM';
         const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
         return `${displayHour}:${minutes} ${ampm}`;
+    }
+    
+    formatRegistrationInfo(info) {
+        // Check if it's a URL (starts with http:// or https://)
+        if (info.toLowerCase().startsWith('http://') || info.toLowerCase().startsWith('https://')) {
+            return `<a href="${info}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none;">🎫 Register/Buy Tickets</a>`;
+        } else {
+            // It's text instructions (like Venmo info)
+            return `<span style="color: #333; font-weight: 500;">💰 ${info}</span>`;
+        }
     }
     
     showNotification(message, duration = 3000) {

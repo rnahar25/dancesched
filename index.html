@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>🕺 Dance Studio Schedule 💃</h1>
+            <h1>🕺 NYC Desi Dance Workshop Schedule 💃</h1>
             <div class="controls">
                 <button id="addClassBtn" class="btn btn-primary">Add New Class</button>
                 <select id="teacherFilter" class="filter-select">
@@ -71,17 +71,21 @@
                     <label for="style">Dance Style:</label>
                     <select id="style" required>
                         <option value="">Select Style</option>
-                        <option value="Ballet">Ballet</option>
-                        <option value="Jazz">Jazz</option>
-                        <option value="Hip Hop">Hip Hop</option>
+                        <option value="Bhangra">Bhangra</option>
+                        <option value="Bhangra Fusion">Bhangra Fusion</option>
+                        <option value="Bollywood">Bollywood</option>
+                        <option value="Bollywood Fusion">Bollywood Fusion</option>
                         <option value="Contemporary">Contemporary</option>
-                        <option value="Tap">Tap</option>
-                        <option value="Ballroom">Ballroom</option>
+                        <option value="Hip Hop">Hip Hop</option>
+                        <option value="Jazz">Jazz</option>
                         <option value="Latin">Latin</option>
-                        <option value="Salsa">Salsa</option>
-                        <option value="Swing">Swing</option>
+                        <option value="Semiclassical">Semiclassical</option>
                         <option value="Other">Other</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location:</label>
+                    <input type="text" id="location" placeholder="e.g., Ripley Grier, Studio A, Room 101">
                 </div>
                 <div class="form-group">
                     <label for="level">Level:</label>
@@ -92,6 +96,10 @@
                         <option value="Advanced">Advanced</option>
                         <option value="All Levels">All Levels</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="ticketLink">Registration/Payment:</label>
+                    <input type="text" id="ticketLink" placeholder="e.g., https://eventbrite.com/event or Venmo @username $25">
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-primary">Save Class</button>
