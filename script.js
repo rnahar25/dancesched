@@ -204,7 +204,7 @@ class DanceScheduler {
             const styleClass = classObj.style.toLowerCase().replace(' ', '');
             classElement.classList.add(styleClass);
             
-            classElement.textContent = `${classObj.time} ${classObj.name}`;
+            classElement.textContent = `${this.formatTime(classObj.time)} ${classObj.name}`;
             classElement.title = `${classObj.name} with ${classObj.teacher}`;
             
             dayClasses.appendChild(classElement);
@@ -299,7 +299,7 @@ class DanceScheduler {
         };
         
         // Validate required fields
-        if (!classData.name || !classData.teacher || !classData.date || !classData.time || !classData.style || !classData.level) {
+        if (!classData.name || !classData.teacher || !classData.date || !classData.time) {
             alert('Please fill in all required fields.');
             return;
         }
@@ -417,11 +417,15 @@ class DanceScheduler {
         const classId = modal.dataset.classId;
         
         if (confirm('Are you sure you want to delete this class?')) {
+            // Get class data before deleting for email notification
+            const classToDelete = this.classes.find(c => c.id === classId);
+            
             this.classes = this.classes.filter(c => c.id !== classId);
             this.saveClassesToStorage();
             this.generateCalendar();
             this.updateTeacherFilter();
             this.closeModal();
+            
             
             // Auto-save to cloud after deletion
             this.autoSaveToCloud();
@@ -660,6 +664,7 @@ class DanceScheduler {
             }, 300);
         }
     }
+    
 }
 
 // Add notification animations
