@@ -200,9 +200,11 @@ class DanceScheduler {
             classElement.className = 'class-item';
             classElement.dataset.classId = classObj.id;
             
-            // Add style-specific class
-            const styleClass = classObj.style.toLowerCase().replace(' ', '');
-            classElement.classList.add(styleClass);
+            // Add style-specific class if style exists
+            if (classObj.style && classObj.style.trim()) {
+                const styleClass = classObj.style.toLowerCase().replace(' ', '');
+                classElement.classList.add(styleClass);
+            }
             
             classElement.textContent = `${this.formatTime(classObj.time)} ${classObj.name}`;
             classElement.title = `${classObj.name} with ${classObj.teacher}`;
@@ -353,16 +355,20 @@ class DanceScheduler {
             </div>
             <div class="detail-item">
                 <span class="detail-label">Duration:</span>
-                <span class="detail-value">${classObj.duration} minutes</span>
+                <span class="detail-value">${classObj.duration || 'Not specified'} minutes</span>
             </div>
+            ${classObj.style ? `
             <div class="detail-item">
                 <span class="detail-label">Dance Style:</span>
                 <span class="detail-value">${classObj.style}</span>
             </div>
+            ` : ''}
+            ${classObj.level ? `
             <div class="detail-item">
                 <span class="detail-label">Level:</span>
                 <span class="detail-value">${classObj.level}</span>
             </div>
+            ` : ''}
             ${classObj.location ? `
             <div class="detail-item">
                 <span class="detail-label">Location:</span>
