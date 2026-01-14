@@ -24,6 +24,7 @@
         </header>
 
         <main>
+            <p class="color-legend-link"><a href="#" id="colorLegendBtn">🎨 What do the colors mean?</a></p>
             <div class="calendar-container">
                 <div class="weekdays">
                     <div class="weekday">Sun</div>
@@ -106,7 +107,6 @@
                         <option value="Hip Hop">Hip Hop</option>
                         <option value="IMGE">IMGE</option>
                         <option value="Semiclassical">Semiclassical</option>
-                        <option value="Tamil Street Jazz">Tamil Street Jazz</option>
                         <option value="Other">Other</option>
                     </select>
                 </div>
@@ -158,6 +158,27 @@
                 <button id="editClassBtn" class="btn btn-primary">Edit Class</button>
                 <button id="deleteClassBtn" class="btn btn-danger">Delete Class</button>
                 <button id="closeDetailsBtn" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Color Legend Modal -->
+    <div id="colorLegendModal" class="modal">
+        <div class="modal-content legend-modal">
+            <span class="close">&times;</span>
+            <h2>🎨 What do the colors mean?</h2>
+            <div class="legend-grid">
+                <div class="legend-pill" style="background:linear-gradient(135deg,#2e7d32,#4caf50);">Bhangra</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#66bb6a,#a5d6a7);">Bhangra Fusion</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#e65100,#ff9800);">Bollywood</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#ffb74d,#ffe0b2);">Bollywood Fusion</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#7b1fa2,#ba68c8);">Bollywood Street Jazz</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#00838f,#4dd0e1);">Contemporary</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#c2185b,#f06292);">Heels</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#1565c0,#64b5f6);">Hip Hop</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#6a1b9a,#e91e63);">Semiclassical</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#d84315,#8d6e63);">IMGE</div>
+                <div class="legend-pill" style="background:linear-gradient(135deg,#455a64,#90a4ae);">Other/Custom</div>
             </div>
         </div>
     </div>

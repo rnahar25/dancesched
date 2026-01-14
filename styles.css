@@ -185,9 +185,9 @@ main {
 }
 
 .calendar-day.today {
-    background: linear-gradient(135deg, #ffd93d, #ff6b6b);
-    color: white;
-    font-weight: bold;
+    background: #f0f4ff;
+    box-shadow: 0 0 12px rgba(102, 126, 234, 0.4);
+    z-index: 1;
 }
 
 .day-number {
@@ -203,7 +203,7 @@ main {
 }
 
 .class-item {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #9c27b0, #e91e63);
     color: white;
     padding: 4px 8px;
     border-radius: 15px;
@@ -226,18 +226,17 @@ main {
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
-.class-item.bhangra { background: linear-gradient(135deg, #4caf50, #8bc34a); }
-.class-item.bhangrafusion { background: linear-gradient(135deg, #66bb6a, #aed581); }
-.class-item.bollywood { background: linear-gradient(135deg, #ff6b35, #f7931e); }
-.class-item.bollywoodfusion { background: linear-gradient(135deg, #ff8a65, #ffab40); }
-.class-item.bollywoodstreetjazz { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
-.class-item.contemporary { background: linear-gradient(135deg, #a8edea, #fed6e3); }
-.class-item.heels { background: linear-gradient(135deg, #fa709a, #fee140); }
-.class-item.hiphop { background: linear-gradient(135deg, #fad0c4, #ffd1ff); }
-.class-item.semiclassical { background: linear-gradient(135deg, #9c27b0, #e91e63); }
-.class-item.tamilstreetjazz { background: linear-gradient(135deg, #26a69a, #4db6ac); }
-.class-item.imge { background: linear-gradient(135deg, #ff5722, #795548); }
-.class-item.other { background: linear-gradient(135deg, #96c93d, #00b09b); }
+.class-item.bhangra { background: linear-gradient(135deg, #2e7d32, #4caf50); }
+.class-item.bhangrafusion { background: linear-gradient(135deg, #66bb6a, #a5d6a7); }
+.class-item.bollywood { background: linear-gradient(135deg, #e65100, #ff9800); }
+.class-item.bollywoodfusion { background: linear-gradient(135deg, #ffb74d, #ffe0b2); }
+.class-item.bollywoodstreetjazz { background: linear-gradient(135deg, #7b1fa2, #ba68c8); }
+.class-item.contemporary { background: linear-gradient(135deg, #00838f, #4dd0e1); }
+.class-item.heels { background: linear-gradient(135deg, #c2185b, #f06292); }
+.class-item.hiphop { background: linear-gradient(135deg, #1565c0, #64b5f6); }
+.class-item.semiclassical { background: linear-gradient(135deg, #6a1b9a, #e91e63); }
+.class-item.imge { background: linear-gradient(135deg, #d84315, #8d6e63); }
+.class-item.other { background: linear-gradient(135deg, #455a64, #90a4ae); }
 
 /* Modal Styles */
 .modal {
@@ -588,6 +587,71 @@ main {
     
     main {
         padding: 10px;
+    }
+}
+
+/* Color Legend */
+.color-legend-link {
+    text-align: right;
+    margin: 0 0 10px 0;
+    font-size: 14px;
+}
+
+.color-legend-link a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.color-legend-link a:hover {
+    text-decoration: underline;
+}
+
+.legend-modal {
+    max-width: 500px;
+}
+
+.legend-modal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.legend-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.legend-pill {
+    padding: 4px 8px;
+    border-radius: 15px;
+    color: white !important;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    font-size: 14px;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+    .legend-grid {
+        grid-template-columns: 1fr;
     }
 }
 

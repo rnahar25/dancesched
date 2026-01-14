@@ -7,6 +7,7 @@ class DanceScheduler {
         this.classes = this.loadClassesFromStorage();
         this.pendingClasses = this.loadPendingClassesFromStorage();
         this.pendingDeletions = this.loadPendingDeletionsFromStorage();
+        this.pendingEdits = this.loadPendingEditsFromStorage();
         this.filteredTeacher = 'all';
         this.editingClassId = null;
         
@@ -18,15 +19,15 @@ class DanceScheduler {
         this.init();
     }
     
-    init() {
+    async init() {
         this.setupEventListeners();
         this.loadStoredCustomStyles(); // Load custom styles before generating calendar
         this.generateCalendar();
         this.updateTeacherFilter();
-        this.setupCloudStorage();
+        await this.setupCloudStorage(); // Wait for cloud data to load first
         this.setupGmailServiceAccount();
         this.loadSampleData();
-        this.handleApprovalRedirect(); // Handle email approval redirects
+        this.handleApprovalRedirect(); // Handle email approval redirects AFTER cloud data loads
     }
     
     setupEventListeners() {
@@ -46,6 +47,12 @@ class DanceScheduler {
         
         // Teacher filter
         document.getElementById('teacherFilter').addEventListener('change', (e) => this.filterByTeacher(e.target.value));
+        
+        // Color legend button
+        document.getElementById('colorLegendBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('colorLegendModal').style.display = 'block';
+        });
         
         // Modal close buttons
         document.querySelectorAll('.close').forEach(close => {
@@ -213,13 +220,10 @@ class DanceScheduler {
             
             // Add style-specific class if style exists
             if (classObj.style && classObj.style.trim()) {
-                const styleClass = this.getStyleClassName(classObj.style);
+                const styleClass = this.isPredefinedStyle(classObj.style) 
+                    ? this.getStyleClassName(classObj.style) 
+                    : 'other';
                 classElement.classList.add(styleClass);
-                
-                // For custom styles, add dynamic color
-                if (!this.isPredefinedStyle(classObj.style)) {
-                    this.addCustomStyleColor(styleClass, classObj.style);
-                }
             }
             
             classElement.textContent = `${this.formatTime(classObj.time)} ${classObj.name}`;
@@ -296,6 +300,7 @@ class DanceScheduler {
     closeModal() {
         document.getElementById('classModal').style.display = 'none';
         document.getElementById('detailsModal').style.display = 'none';
+        document.getElementById('colorLegendModal').style.display = 'none';
         this.editingClassId = null;
     }
     
@@ -334,20 +339,28 @@ class DanceScheduler {
         }
         
         if (this.editingClassId) {
-            // Update existing class directly (admin editing approved classes)
-            const index = this.classes.findIndex(c => c.id === this.editingClassId);
-            if (index !== -1) {
-                this.classes[index] = classData;
-                this.saveClassesToStorage();
-                this.generateCalendar();
-                this.updateTeacherFilter();
-                
-                // Send admin notification for edit
-                this.sendAdminNotification('class_edit', classData);
-                
-                this.autoSaveToCloud();
-                this.showNotification('Class updated successfully!');
-            }
+            // Get original class data for comparison
+            const originalClass = this.classes.find(c => c.id === this.editingClassId);
+            
+            // Create pending edit request instead of direct update
+            const pendingEdit = {
+                ...classData,
+                originalId: this.editingClassId,
+                originalData: originalClass,
+                status: 'pending_edit',
+                editRequestedAt: new Date().toISOString(),
+                approvalToken: this.generateApprovalToken()
+            };
+            
+            // Add to pending edits (shared across all users)
+            this.pendingEdits.push(pendingEdit);
+            this.savePendingEditsToStorage();
+            this.autoSavePendingEditsToCloud();
+            
+            // Send edit approval email
+            this.sendEditApprovalEmail(pendingEdit);
+            
+            this.showNotification('Class edit submitted for approval!', 5000);
         } else {
             // New submissions go to pending for approval
             const pendingClass = {
@@ -679,6 +692,24 @@ class DanceScheduler {
         }
     }
     
+    loadPendingEditsFromStorage() {
+        try {
+            const stored = localStorage.getItem('pendingDanceEdits');
+            return stored ? JSON.parse(stored) : [];
+        } catch (error) {
+            console.error('Error loading pending edits from storage:', error);
+            return [];
+        }
+    }
+    
+    savePendingEditsToStorage() {
+        try {
+            localStorage.setItem('pendingDanceEdits', JSON.stringify(this.pendingEdits));
+        } catch (error) {
+            console.error('Error saving pending edits to storage:', error);
+        }
+    }
+    
     generateApprovalToken() {
         return Date.now().toString(36) + Math.random().toString(36).substr(2, 16);
     }
@@ -729,6 +760,9 @@ class DanceScheduler {
             
             // Load pending deletions from cloud
             await this.autoLoadPendingDeletionsFromCloud();
+            
+            // Load pending edits from cloud
+            await this.autoLoadPendingEditsFromCloud();
             
             // Set up real-time listener for changes from other users
             this.setupRealtimeListener();
@@ -908,6 +942,53 @@ class DanceScheduler {
             
         } catch (error) {
             console.error('Error saving pending deletions to cloud:', error);
+            // Fail silently for auto-save
+        }
+    }
+
+    // Auto-load pending edits from cloud (shared across all users)
+    async autoLoadPendingEditsFromCloud() {
+        if (!this.db) {
+            return; // Use local data if Firebase not available
+        }
+
+        try {
+            // Load pending edits from shared Firebase collection
+            const doc = await this.db.collection('pendingEdits').doc('shared_pending_edits').get();
+            
+            if (doc.exists) {
+                const cloudData = doc.data();
+                const cloudPendingEdits = cloudData.pendingEdits || [];
+                
+                console.log(`Loaded ${cloudPendingEdits.length} pending edits from cloud`);
+                this.pendingEdits = cloudPendingEdits;
+                this.savePendingEditsToStorage(); // Also save to local storage as backup
+            }
+            
+        } catch (error) {
+            console.error('Error loading pending edits from cloud:', error);
+            // Continue with local data if cloud load fails
+        }
+    }
+
+    // Auto-save pending edits to cloud (shared across all users)
+    async autoSavePendingEditsToCloud() {
+        if (!this.db) {
+            return; // Fail silently if Firebase not available
+        }
+
+        try {
+            const docData = {
+                pendingEdits: this.pendingEdits,
+                lastUpdated: new Date().toISOString()
+            };
+
+            // Save to shared Firebase Firestore collection
+            await this.db.collection('pendingEdits').doc('shared_pending_edits').set(docData);
+            console.log('Pending edits saved to cloud');
+            
+        } catch (error) {
+            console.error('Error saving pending edits to cloud:', error);
             // Fail silently for auto-save
         }
     }
@@ -1146,6 +1227,51 @@ class DanceScheduler {
             
         } catch (error) {
             console.error('Error sending deletion approval email:', error);
+        }
+    }
+
+    async sendEditApprovalEmail(pendingEdit) {
+        try {
+            if (this.emailEndpoint === 'YOUR_BACKEND_ENDPOINT_URL_HERE') {
+                console.log('Gmail Service Account backend not configured - skipping edit approval email');
+                return;
+            }
+
+            console.log('Sending edit approval email with action: edit...');
+            
+            // Send edit approval email to admin
+            const requestPayload = {
+                type: 'class_approval',
+                action: 'edit',
+                classData: pendingEdit,
+                originalData: pendingEdit.originalData,
+                approvalToken: pendingEdit.approvalToken,
+                timestamp: new Date().toISOString(),
+                source: 'Dance Schedule Website'
+            };
+            
+            console.log('Edit email payload:', requestPayload);
+            
+            const response = await fetch(this.emailEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestPayload)
+            });
+            
+            if (response.ok) {
+                console.log('Edit approval email sent successfully');
+                const responseData = await response.json();
+                console.log('Backend response:', responseData);
+            } else {
+                console.error('Failed to send edit approval email:', response.status, response.statusText);
+                const errorText = await response.text();
+                console.error('Backend error response:', errorText);
+            }
+            
+        } catch (error) {
+            console.error('Error sending edit approval email:', error);
         }
     }
 
@@ -1455,47 +1581,93 @@ class DanceScheduler {
                     this.showNotification(`❌ Class "${pendingClass.name}" has been rejected and removed from pending.`, 6000);
                 }
             } else {
-                // Check pending deletions (for deleting existing classes)
-                const pendingDeletionIndex = this.pendingDeletions.findIndex(c => c.approvalToken === approvalToken);
+                // Check pending edits (for editing existing classes)
+                const pendingEditIndex = this.pendingEdits.findIndex(c => c.approvalToken === approvalToken);
                 
-                if (pendingDeletionIndex !== -1) {
-                    const pendingDeletion = this.pendingDeletions[pendingDeletionIndex];
+                if (pendingEditIndex !== -1) {
+                    const pendingEdit = this.pendingEdits[pendingEditIndex];
                     
                     if (approvalAction === 'approve') {
-                        // Approve deletion: remove class from main calendar and remove from pending deletions
-                        const classIndex = this.classes.findIndex(c => c.id === pendingDeletion.originalId);
-                        console.log(`Found class to delete at index: ${classIndex}, originalId: ${pendingDeletion.originalId}`);
-                        console.log(`Classes before deletion: ${this.classes.length}`);
+                        // Approve edit: update the original class with new data and remove from pending edits
+                        const classIndex = this.classes.findIndex(c => c.id === pendingEdit.originalId);
+                        console.log(`Found class to edit at index: ${classIndex}, originalId: ${pendingEdit.originalId}`);
                         
                         if (classIndex !== -1) {
-                            this.classes.splice(classIndex, 1); // Remove class from calendar
-                            console.log(`Classes after deletion: ${this.classes.length}`);
+                            // Update the class with new data (remove edit-specific fields)
+                            const updatedClass = { ...pendingEdit };
+                            delete updatedClass.originalId;
+                            delete updatedClass.originalData;
+                            delete updatedClass.status;
+                            delete updatedClass.editRequestedAt;
+                            delete updatedClass.approvalToken;
+                            
+                            this.classes[classIndex] = updatedClass;
+                            console.log(`Class updated successfully`);
                         }
-                        this.pendingDeletions.splice(pendingDeletionIndex, 1); // Remove from pending deletions
+                        this.pendingEdits.splice(pendingEditIndex, 1); // Remove from pending edits
                         
-                        // Force UI refresh immediately
+                        // Save changes
                         this.saveClassesToStorage();
-                        this.savePendingDeletionsToStorage();
-                        this.generateCalendar(); // Force UI refresh first
+                        this.savePendingEditsToStorage();
+                        this.generateCalendar();
                         this.updateTeacherFilter();
                         
-                        // Then sync to cloud
-                        this.autoSavePendingDeletionsToCloud(); // Update shared Firebase
-                        this.autoSaveToCloud(); // Save main classes collection
+                        // Sync to cloud
+                        this.autoSavePendingEditsToCloud();
+                        this.autoSaveToCloud();
                         
-                        console.log('Deletion approved - UI refreshed and cloud sync initiated');
-                        this.showNotification(`✅ Class "${pendingDeletion.name}" has been deleted from the calendar!`, 6000);
+                        this.showNotification(`✅ Class "${pendingEdit.name}" edit has been approved and updated!`, 6000);
                         
                     } else if (approvalAction === 'reject') {
-                        // Reject deletion: just remove from pending deletions, keep class on calendar
-                        this.pendingDeletions.splice(pendingDeletionIndex, 1);
-                        this.savePendingDeletionsToStorage();
-                        this.autoSavePendingDeletionsToCloud(); // Update shared Firebase
+                        // Reject edit: just remove from pending edits, keep original class unchanged
+                        this.pendingEdits.splice(pendingEditIndex, 1);
+                        this.savePendingEditsToStorage();
+                        this.autoSavePendingEditsToCloud();
                         
-                        this.showNotification(`❌ Deletion request for "${pendingDeletion.name}" has been rejected. Class remains on calendar.`, 6000);
+                        this.showNotification(`❌ Edit request for "${pendingEdit.name}" has been rejected. Original class remains unchanged.`, 6000);
                     }
                 } else {
-                    this.showNotification('Approval token not found. The class may have already been processed.', 4000);
+                    // Check pending deletions (for deleting existing classes)
+                    const pendingDeletionIndex = this.pendingDeletions.findIndex(c => c.approvalToken === approvalToken);
+                    
+                    if (pendingDeletionIndex !== -1) {
+                        const pendingDeletion = this.pendingDeletions[pendingDeletionIndex];
+                        
+                        if (approvalAction === 'approve') {
+                            // Approve deletion: remove class from main calendar and remove from pending deletions
+                            const classIndex = this.classes.findIndex(c => c.id === pendingDeletion.originalId);
+                            console.log(`Found class to delete at index: ${classIndex}, originalId: ${pendingDeletion.originalId}`);
+                            console.log(`Classes before deletion: ${this.classes.length}`);
+                            
+                            if (classIndex !== -1) {
+                                this.classes.splice(classIndex, 1); // Remove class from calendar
+                                console.log(`Classes after deletion: ${this.classes.length}`);
+                            }
+                            this.pendingDeletions.splice(pendingDeletionIndex, 1); // Remove from pending deletions
+                            
+                            // Force UI refresh immediately
+                            this.saveClassesToStorage();
+                            this.savePendingDeletionsToStorage();
+                            this.generateCalendar(); // Force UI refresh first
+                            this.updateTeacherFilter();
+                            
+                            // Then sync to cloud
+                            this.autoSavePendingDeletionsToCloud(); // Update shared Firebase
+                            this.autoSaveToCloud(); // Save main classes collection
+                            
+                            console.log('Deletion approved - UI refreshed and cloud sync initiated');
+                            this.showNotification(`✅ Class "${pendingDeletion.name}" has been deleted from the calendar!`, 6000);
+                        } else if (approvalAction === 'reject') {
+                            // Reject deletion: just remove from pending deletions, keep class on calendar
+                            this.pendingDeletions.splice(pendingDeletionIndex, 1);
+                            this.savePendingDeletionsToStorage();
+                            this.autoSavePendingDeletionsToCloud(); // Update shared Firebase
+                            
+                            this.showNotification(`❌ Deletion request for "${pendingDeletion.name}" has been rejected. Class remains on calendar.`, 6000);
+                        }
+                    } else {
+                        this.showNotification('Approval token not found. The class may have already been processed.', 4000);
+                    }
                 }
             }
             
@@ -1504,42 +1676,42 @@ class DanceScheduler {
             window.history.replaceState({}, document.title, newUrl);
         }
     }
-    
 }
-
-// Add notification animations
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
-    }
-    
-    @keyframes slideOutRight {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-    
-    @keyframes fadeOut {
-        from { opacity: 1; }
-        to { opacity: 0; }
-    }
-`;
-document.head.appendChild(style);
 
 // Initialize the app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    // Add notification animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize the app
     new DanceScheduler();
 });
