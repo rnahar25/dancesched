@@ -230,11 +230,13 @@ main {
 .class-item.bhangrafusion { background: linear-gradient(135deg, #66bb6a, #aed581); }
 .class-item.bollywood { background: linear-gradient(135deg, #ff6b35, #f7931e); }
 .class-item.bollywoodfusion { background: linear-gradient(135deg, #ff8a65, #ffab40); }
+.class-item.bollywoodstreetjazz { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
 .class-item.contemporary { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+.class-item.heels { background: linear-gradient(135deg, #fa709a, #fee140); }
 .class-item.hiphop { background: linear-gradient(135deg, #fad0c4, #ffd1ff); }
-.class-item.jazz { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
-.class-item.latin { background: linear-gradient(135deg, #fa709a, #fee140); }
 .class-item.semiclassical { background: linear-gradient(135deg, #9c27b0, #e91e63); }
+.class-item.tamilstreetjazz { background: linear-gradient(135deg, #26a69a, #4db6ac); }
+.class-item.imge { background: linear-gradient(135deg, #ff5722, #795548); }
 .class-item.other { background: linear-gradient(135deg, #96c93d, #00b09b); }
 
 /* Modal Styles */

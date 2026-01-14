@@ -42,17 +42,21 @@
         
         <footer class="site-footer">
             <div class="footer-content">
-                <p><strong>Thanks for visiting!</strong></p>
+                <div class="suggestion-form">
+                    <p><strong>Have ideas or feedback?</strong></p>
+                    <form id="suggestionForm" style="margin-top: 10px;">
+                        <textarea id="suggestionText" placeholder="Share your suggestions, feedback, or ideas..." rows="2" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; resize: vertical; font-family: inherit;"></textarea>
+                        <button type="submit" style="margin-top: 8px; padding: 6px 15px; background: #667eea; color: white; border: none; border-radius: 15px; font-size: 12px; cursor: pointer; font-weight: 500;">Tell me what you want next</button>
+                    </form>
+                </div>
                 
-                <p>This site is a work in progress, built to make it easier to discover dance classes in one place.</p>
+                <p style="opacity: 0.8; font-size: 14px;">This site is a work in progress, built to make it easier to discover dance classes in one place.</p>
                 
-                <p><strong>Have ideas or feedback?</strong> 📩 <a href="mailto:naharupal@gmail.com">naharupal@gmail.com</a></p>
+                <p style="opacity: 0.8; font-size: 14px;">✨ <a href="https://docs.google.com/document/d/1GdUbWA3djJzRnSZrwildGV30sO5lCvPLlkHVyKiRXCo/edit?usp=sharing" target="_blank" rel="noopener noreferrer">See what features I'm working on next</a></p>
                 
-                <p><strong>Curious what's coming next?</strong> ✨ <a href="https://docs.google.com/document/d/1GdUbWA3djJzRnSZrwildGV30sO5lCvPLlkHVyKiRXCo/edit?usp=sharing" target="_blank" rel="noopener noreferrer">See what's coming next</a></p>
+                <p class="disclaimer" style="opacity: 0.7; font-size: 13px;">Features and timelines may change based on feedback and capacity.</p>
                 
-                <p class="disclaimer">Features and timelines may change based on feedback and capacity.</p>
-                
-                <p class="signature">Built with love for the dance community ❤️<br>
+                <p class="signature" style="opacity: 0.6; font-size: 13px;">Built with love for the dance community ❤️<br>
                 <em>— by a dancer who got tired of chasing class flyers across Instagram</em></p>
             </div>
         </footer>
@@ -96,13 +100,19 @@
                         <option value="Bhangra Fusion">Bhangra Fusion</option>
                         <option value="Bollywood">Bollywood</option>
                         <option value="Bollywood Fusion">Bollywood Fusion</option>
+                        <option value="Bollywood Street Jazz">Bollywood Street Jazz</option>
                         <option value="Contemporary">Contemporary</option>
+                        <option value="Heels">Heels</option>
                         <option value="Hip Hop">Hip Hop</option>
-                        <option value="Jazz">Jazz</option>
-                        <option value="Latin">Latin</option>
+                        <option value="IMGE">IMGE</option>
                         <option value="Semiclassical">Semiclassical</option>
+                        <option value="Tamil Street Jazz">Tamil Street Jazz</option>
                         <option value="Other">Other</option>
                     </select>
+                </div>
+                <div class="form-group" id="customStyleGroup" style="display: none;">
+                    <label for="customStyle">Enter Custom Dance Style:</label>
+                    <input type="text" id="customStyle" placeholder="e.g., Lyrical, Tap, Salsa, etc.">
                 </div>
                 <div class="form-group">
                     <label for="location">Location: <span style="color: #666; font-weight: normal;">(Optional)</span></label>
@@ -125,6 +135,10 @@
                 <div class="form-group">
                     <label for="teacherInstagram">Teacher Instagram: <span style="color: #666; font-weight: normal;">(Optional)</span></label>
                     <input type="text" id="teacherInstagram" placeholder="e.g., @teachername">
+                </div>
+                <div class="form-group">
+                    <label for="submitterEmail">Your Email: <span style="color: #666; font-weight: normal;">(Optional - get notified when approved)</span></label>
+                    <input type="email" id="submitterEmail" placeholder="e.g., your@email.com">
                 </div>
                 <div class="form-buttons">
                     <button type="submit" class="btn btn-primary">Save Class</button>
@@ -151,6 +165,8 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    
+    <!-- No external scripts needed - using secure Gmail API backend endpoint -->
     
     <script src="script.js"></script>
 </body>
