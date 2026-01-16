@@ -226,13 +226,15 @@ main {
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
+.class-item.bharatnatyamfusion { background: linear-gradient(135deg, #1a237e, #5c6bc0); }
 .class-item.bhangra { background: linear-gradient(135deg, #2e7d32, #4caf50); }
 .class-item.bhangrafusion { background: linear-gradient(135deg, #66bb6a, #a5d6a7); }
+.class-item.bollyfemme { background: linear-gradient(135deg, #1a1a1a, #d50000); }
 .class-item.bollywood { background: linear-gradient(135deg, #e65100, #ff9800); }
-.class-item.bollywoodfusion { background: linear-gradient(135deg, #ffb74d, #ffe0b2); }
-.class-item.bollywoodstreetjazz { background: linear-gradient(135deg, #7b1fa2, #ba68c8); }
+.class-item.bollywoodfusion { background: linear-gradient(135deg, #e65100, #ff9800); }
+.class-item.bollywoodstreetjazz { background: linear-gradient(135deg, #e65100, #ff9800); }
 .class-item.contemporary { background: linear-gradient(135deg, #00838f, #4dd0e1); }
-.class-item.heels { background: linear-gradient(135deg, #c2185b, #f06292); }
+.class-item.heels { background: linear-gradient(135deg, #b71c1c, #ef5350); }
 .class-item.hiphop { background: linear-gradient(135deg, #1565c0, #64b5f6); }
 .class-item.semiclassical { background: linear-gradient(135deg, #6a1b9a, #e91e63); }
 .class-item.imge { background: linear-gradient(135deg, #d84315, #8d6e63); }

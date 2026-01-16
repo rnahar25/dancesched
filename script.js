@@ -328,8 +328,7 @@ class DanceScheduler {
             location: formData.get('location') || document.getElementById('location').value || '',
             ticketLink: formData.get('ticketLink') || document.getElementById('ticketLink').value || '',
             teacherBioUrl: formData.get('teacherBioUrl') || document.getElementById('teacherBioUrl').value || '',
-            teacherInstagram: formData.get('teacherInstagram') || document.getElementById('teacherInstagram').value || '',
-            submitterEmail: formData.get('submitterEmail') || document.getElementById('submitterEmail').value || ''
+            teacherInstagram: formData.get('teacherInstagram') || document.getElementById('teacherInstagram').value || ''
         };
         
         // Validate required fields
@@ -498,7 +497,7 @@ class DanceScheduler {
         const customStyleInput = document.getElementById('customStyle');
         
         // Check if the existing style is in our predefined options
-        const predefinedStyles = ['Bhangra', 'Bhangra Fusion', 'Bollywood', 'Bollywood Fusion', 'Bollywood Street Jazz', 'Contemporary', 'Heels', 'Hip Hop', 'IMGE', 'Semiclassical', 'Tamil Street Jazz'];
+        const predefinedStyles = ['Bharatnatyam Fusion', 'Bhangra', 'Bhangra Fusion', 'Bolly Femme', 'Bollywood', 'Bollywood Fusion', 'Bollywood Street Jazz', 'Contemporary', 'Heels', 'IMGE', 'Semiclassical', 'Tamil Street Jazz'];
         
         if (classObj.style && predefinedStyles.includes(classObj.style)) {
             // It's a predefined style
@@ -1381,8 +1380,8 @@ class DanceScheduler {
     
     isPredefinedStyle(style) {
         const predefinedStyles = [
-            'Bhangra', 'Bhangra Fusion', 'Bollywood', 'Bollywood Fusion', 
-            'Bollywood Street Jazz', 'Contemporary', 'Heels', 'Hip Hop', 
+            'Bharatnatyam Fusion', 'Bhangra', 'Bhangra Fusion', 'Bolly Femme', 'Bollywood', 'Bollywood Fusion', 
+            'Bollywood Street Jazz', 'Contemporary', 'Heels', 
             'IMGE', 'Semiclassical', 'Tamil Street Jazz', 'Other'
         ];
         return predefinedStyles.includes(style);
