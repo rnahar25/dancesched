@@ -1,0 +1,6 @@
+# Redirect old domain to new
+https://nycdanceschedule.netlify.app/*  https://desidanceschedule.com/:splat  301!
+
+# SPA routing for regions
+/nyc        /index.html   200
+/bayarea    /index.html   200

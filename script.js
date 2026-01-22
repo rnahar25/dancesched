@@ -9,6 +9,7 @@ class DanceScheduler {
         this.pendingDeletions = this.loadPendingDeletionsFromStorage();
         this.pendingEdits = this.loadPendingEditsFromStorage();
         this.filteredTeacher = 'all';
+        this.selectedRegion = this.getRegionFromUrl();
         this.editingClassId = null;
         
         this.monthNames = [
@@ -21,13 +22,15 @@ class DanceScheduler {
     
     async init() {
         this.setupEventListeners();
-        this.loadStoredCustomStyles(); // Load custom styles before generating calendar
+        this.updateRegionToggle();
+        this.updatePageTitle();
+        this.loadStoredCustomStyles();
         this.generateCalendar();
         this.updateTeacherFilter();
-        await this.setupCloudStorage(); // Wait for cloud data to load first
+        await this.setupCloudStorage();
         this.setupGmailServiceAccount();
         this.loadSampleData();
-        this.handleApprovalRedirect(); // Handle email approval redirects AFTER cloud data loads
+        this.handleApprovalRedirect();
     }
     
     setupEventListeners() {
@@ -47,6 +50,22 @@ class DanceScheduler {
         
         // Teacher filter
         document.getElementById('teacherFilter').addEventListener('change', (e) => this.filterByTeacher(e.target.value));
+        
+        // Region filter
+        document.querySelectorAll('.region-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.filterByRegion(e.target.dataset.region));
+        });
+        
+        // Handle browser back/forward
+        window.addEventListener('popstate', (e) => {
+            this.selectedRegion = this.getRegionFromUrl();
+            this.updateRegionToggle();
+            this.updatePageTitle();
+            this.filteredTeacher = 'all';
+            document.getElementById('teacherFilter').value = 'all';
+            this.updateTeacherFilter();
+            this.generateCalendar();
+        });
         
         // Color legend button
         document.getElementById('colorLegendBtn').addEventListener('click', (e) => {
@@ -247,13 +266,16 @@ class DanceScheduler {
     getClassesForDate(dateStr) {
         return this.classes
             .filter(classObj => classObj.date === dateStr)
+            .filter(classObj => (classObj.region || 'nyc') === this.selectedRegion)
             .filter(classObj => this.filteredTeacher === 'all' || classObj.teacher === this.filteredTeacher)
             .sort((a, b) => a.time.localeCompare(b.time));
     }
     
     updateTeacherFilter() {
         const teacherFilter = document.getElementById('teacherFilter');
-        const teachers = [...new Set(this.classes.map(c => c.teacher))].sort();
+        const teachers = [...new Set(this.classes
+            .filter(c => (c.region || 'nyc') === this.selectedRegion)
+            .map(c => c.teacher))].sort();
         
         // Clear current options except "All Teachers"
         teacherFilter.innerHTML = '<option value="all">All Teachers</option>';
@@ -270,6 +292,39 @@ class DanceScheduler {
     filterByTeacher(teacher) {
         this.filteredTeacher = teacher;
         this.generateCalendar();
+    }
+    
+    filterByRegion(region) {
+        this.selectedRegion = region;
+        this.filteredTeacher = 'all';
+        document.getElementById('teacherFilter').value = 'all';
+        this.updateUrlForRegion(region);
+        this.updateRegionToggle();
+        this.updatePageTitle();
+        this.updateTeacherFilter();
+        this.generateCalendar();
+    }
+    
+    updateRegionToggle() {
+        document.querySelectorAll('.region-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.region === this.selectedRegion);
+        });
+    }
+    
+    updatePageTitle() {
+        const regionName = this.selectedRegion === 'nyc' ? 'NYC' : 'Bay Area';
+        document.querySelector('header h1').textContent = `${regionName} Desi Dance Workshop Schedule`;
+    }
+    
+    getRegionFromUrl() {
+        const path = window.location.pathname.toLowerCase();
+        if (path.includes('/bayarea')) return 'bayarea';
+        return 'nyc';
+    }
+    
+    updateUrlForRegion(region) {
+        const newPath = '/' + region;
+        window.history.pushState({region}, '', newPath);
     }
     
     openAddClassModal(selectedDate = null) {
@@ -307,28 +362,27 @@ class DanceScheduler {
     handleFormSubmit(e) {
         e.preventDefault();
         
-        const formData = new FormData(e.target);
-        
         // Handle custom style input
-        let styleValue = formData.get('style') || document.getElementById('style').value;
+        let styleValue = document.getElementById('style').value;
         if (styleValue === 'Other') {
-            const customStyle = formData.get('customStyle') || document.getElementById('customStyle').value;
-            styleValue = customStyle ? customStyle.trim() : '';
+            const customStyle = document.getElementById('customStyle').value.trim();
+            styleValue = customStyle || 'Other';
         }
         
         const classData = {
             id: this.editingClassId || this.generateId(),
-            name: formData.get('className') || document.getElementById('className').value,
-            teacher: formData.get('teacher') || document.getElementById('teacher').value,
-            date: formData.get('date') || document.getElementById('date').value,
-            time: formData.get('time') || document.getElementById('time').value,
-            duration: parseInt(formData.get('duration') || document.getElementById('duration').value),
+            name: document.getElementById('className').value,
+            teacher: document.getElementById('teacher').value,
+            date: document.getElementById('date').value,
+            time: document.getElementById('time').value,
+            duration: parseInt(document.getElementById('duration').value),
             style: styleValue,
-            level: formData.get('level') || document.getElementById('level').value,
-            location: formData.get('location') || document.getElementById('location').value || '',
-            ticketLink: formData.get('ticketLink') || document.getElementById('ticketLink').value || '',
-            teacherBioUrl: formData.get('teacherBioUrl') || document.getElementById('teacherBioUrl').value || '',
-            teacherInstagram: formData.get('teacherInstagram') || document.getElementById('teacherInstagram').value || ''
+            level: document.getElementById('level').value,
+            location: document.getElementById('location').value || '',
+            ticketLink: document.getElementById('ticketLink').value || '',
+            teacherBioUrl: document.getElementById('teacherBioUrl').value || '',
+            teacherInstagram: document.getElementById('teacherInstagram').value || '',
+            region: this.selectedRegion
         };
         
         // Validate required fields
@@ -344,6 +398,7 @@ class DanceScheduler {
             // Create pending edit request instead of direct update
             const pendingEdit = {
                 ...classData,
+                region: originalClass.region || 'nyc', // Preserve original region
                 originalId: this.editingClassId,
                 originalData: originalClass,
                 status: 'pending_edit',
@@ -1540,7 +1595,7 @@ class DanceScheduler {
     }
 
     // Handle approval redirects from email buttons
-    handleApprovalRedirect() {
+    async handleApprovalRedirect() {
         const urlParams = new URLSearchParams(window.location.search);
         const approvalAction = urlParams.get('approvalAction');
         const approvalToken = urlParams.get('approvalToken');
@@ -1588,12 +1643,14 @@ class DanceScheduler {
                     
                     if (approvalAction === 'approve') {
                         // Approve edit: update the original class with new data and remove from pending edits
+                        this.disableRealtimeListener = true; // Prevent realtime sync from overwriting
+                        
                         const classIndex = this.classes.findIndex(c => c.id === pendingEdit.originalId);
-                        console.log(`Found class to edit at index: ${classIndex}, originalId: ${pendingEdit.originalId}`);
                         
                         if (classIndex !== -1) {
                             // Update the class with new data (remove edit-specific fields)
                             const updatedClass = { ...pendingEdit };
+                            updatedClass.id = pendingEdit.originalId; // Keep original ID
                             delete updatedClass.originalId;
                             delete updatedClass.originalData;
                             delete updatedClass.status;
@@ -1601,19 +1658,21 @@ class DanceScheduler {
                             delete updatedClass.approvalToken;
                             
                             this.classes[classIndex] = updatedClass;
-                            console.log(`Class updated successfully`);
                         }
                         this.pendingEdits.splice(pendingEditIndex, 1); // Remove from pending edits
                         
                         // Save changes
                         this.saveClassesToStorage();
                         this.savePendingEditsToStorage();
+                        
+                        // Sync to cloud FIRST, then refresh UI
+                        await this.autoSaveToCloud();
+                        await this.autoSavePendingEditsToCloud();
+                        
                         this.generateCalendar();
                         this.updateTeacherFilter();
                         
-                        // Sync to cloud
-                        this.autoSavePendingEditsToCloud();
-                        this.autoSaveToCloud();
+                        setTimeout(() => { this.disableRealtimeListener = false; }, 2000);
                         
                         this.showNotification(`✅ Class "${pendingEdit.name}" edit has been approved and updated!`, 6000);
                         

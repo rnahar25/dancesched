@@ -28,9 +28,11 @@ header {
 }
 
 header h1 {
+    font-family: 'Poppins', sans-serif;
     font-size: 2.5rem;
     margin-bottom: 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    font-weight: 700;
 }
 
 .controls {
@@ -39,6 +41,12 @@ header h1 {
     align-items: center;
     flex-wrap: wrap;
     gap: 15px;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .btn {
@@ -108,6 +116,36 @@ header h1 {
 .filter-select option {
     background: #333;
     color: white;
+}
+
+.region-filter {
+    background: rgba(255, 255, 255, 0.3);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.region-toggle {
+    display: flex;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 4px;
+}
+
+.region-btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 20px;
+    background: transparent;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.region-btn.active {
+    background: white;
+    color: #ff6b6b;
 }
 
 .sync-buttons {
@@ -595,8 +633,31 @@ main {
 /* Color Legend */
 .color-legend-link {
     text-align: right;
-    margin: 0 0 10px 0;
+    margin: 0;
     font-size: 14px;
+}
+
+.calendar-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.teacher-filter {
+    background: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.teacher-filter option {
+    background: white;
+    color: #333;
 }
 
 .color-legend-link a {

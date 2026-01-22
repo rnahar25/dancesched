@@ -1,8 +1,13 @@
-# NYC Desi Dance Scheduler
+# Desi Dance Schedule
 
-This is a community-driven dance class discovery site built to make it easier to find dance classes in one place, without chasing flyers across Instagram.
+A community-driven dance class discovery site for finding Desi dance classes in one place, without chasing flyers across Instagram.
 
-👉 **Live site:** https://nycdanceschedule.netlify.app/
+👉 **Live site:** https://desidanceschedule.com
+
+## 🌎 Regions
+
+- **NYC** - https://desidanceschedule.com/nyc
+- **Bay Area** - https://desidanceschedule.com/bayarea
 
 ## 🛠️ Tech Stack
 
@@ -14,7 +19,7 @@ This is a community-driven dance class discovery site built to make it easier to
 
 ## 🔗 Project Links
 
-- **Website:** https://nycdanceschedule.netlify.app/
+- **Website:** https://desidanceschedule.com
 - **Gmail Function:** https://gmail-function.vercel.app/api/send-email
 - **Future Enhancements:** https://docs.google.com/document/d/1GdUbWA3djJzRnSZrwildGV30sO5lCvPLlkHVyKiRXCo/edit?tab=t.0
 
@@ -52,6 +57,7 @@ The email functionality uses Gmail API with OAuth 2.0 for secure, reliable email
 
 ## ✨ Features
 
+- 🌎 **Multi-Region Support** - Switch between NYC and Bay Area calendars
 - 📅 **Interactive Calendar** - Click any day to add a class
 - 🎭 **Dance Style Colors** - Each dance style gets a unique color
 - 👩‍🏫 **Teacher Filtering** - Filter classes by instructor
