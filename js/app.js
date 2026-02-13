@@ -235,6 +235,11 @@ class DanceScheduler {
 
         const modal = document.getElementById('detailsModal');
         modal.dataset.classId = classId;
+        
+        // Add/remove sold out overlay
+        const content = modal.querySelector('.modal-content');
+        content.classList.toggle('sold-out-overlay', !!c.soldOut);
+        
         this.ui.openModal('detailsModal');
     }
 

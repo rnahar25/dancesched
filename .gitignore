@@ -1,0 +1,8 @@
+node_modules/
+.env
+.DS_Store
+gmail-function/
+scraper.js 
+scraper-function/
+package.json
+package-lock.json

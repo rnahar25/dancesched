@@ -105,7 +105,8 @@ export class UI {
             c.style && ['Dance Style', c.style],
             c.level && ['Level', c.level],
             c.location && ['Location', c.location],
-            c.ticketLink && ['Registration/Payment', formatReg(c.ticketLink)]
+            c.ticketLink && ['Registration/Payment', formatReg(c.ticketLink)],
+            c.bundleAvailable && ['Bundle Options', '<span style="color:#10b981;font-weight:600">💰 Bundle pricing available</span>']
         ].filter(Boolean);
 
         return items.map(([label, value]) => `

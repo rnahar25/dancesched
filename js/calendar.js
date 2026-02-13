@@ -69,6 +69,17 @@ export class Calendar {
             }
 
             item.textContent = `${formatTime(c.time)} ${c.name}`;
+            if (c.soldOut) {
+                const badge = document.createElement('span');
+                badge.className = 'soldout-badge';
+                badge.textContent = 'SOLD OUT';
+                item.appendChild(badge);
+            } else if (c.onSale) {
+                const badge = document.createElement('span');
+                badge.className = 'sale-badge';
+                badge.textContent = 'SALE';
+                item.appendChild(badge);
+            }
             item.title = `${c.name} with ${c.teacher}`;
             dayClasses.appendChild(item);
         });

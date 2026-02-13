@@ -141,6 +141,8 @@ header h1 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex: 1;
+    min-width: 0;
 }
 
 .region-btn.active {
@@ -863,4 +865,45 @@ main {
         margin-bottom: 3px;
     }
     
+}
+
+/* Sale badge */
+.sale-badge {
+    background: #e53935;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+/* Sold out badge */
+.soldout-badge {
+    background: #757575;
+    color: white;
+    font-size: 9px;
+    font-weight: bold;
+    padding: 1px 4px;
+    border-radius: 3px;
+    margin-left: 4px;
+    vertical-align: middle;
+}
+
+/* Sold out overlay on modal */
+.sold-out-overlay {
+    position: relative;
+}
+.sold-out-overlay::after {
+    content: 'SOLD OUT';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    font-size: 48px;
+    font-weight: bold;
+    color: rgba(229, 57, 53, 0.25);
+    pointer-events: none;
+    white-space: nowrap;
 }
