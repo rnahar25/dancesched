@@ -141,8 +141,9 @@ header h1 {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    flex: 1;
-    min-width: 0;
+    white-space: nowrap;
+    min-width: 75px;
+    text-align: center;
 }
 
 .region-btn.active {
@@ -877,6 +878,7 @@ main {
     border-radius: 3px;
     margin-left: 4px;
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 /* Sold out badge */
@@ -889,6 +891,7 @@ main {
     border-radius: 3px;
     margin-left: 4px;
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 /* Sold out overlay on modal */
