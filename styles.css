@@ -142,7 +142,7 @@ header h1 {
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
-    min-width: 75px;
+    flex: 1;
     text-align: center;
 }
 
@@ -891,7 +891,8 @@ main {
     border-radius: 3px;
     margin-left: 4px;
     vertical-align: middle;
-    white-space: nowrap;
+    max-width: 28px;
+    text-align: center;
 }
 
 /* Sold out overlay on modal */
